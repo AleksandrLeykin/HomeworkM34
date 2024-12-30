@@ -2,16 +2,7 @@
 #include <string>
 
 template <typename T>
-concept SignedIntegral = std::is_integral<T>::value && std::is_signed<T>::value;
-
-template <SignedIntegral T>
-void funcOnlyForSignedInts(T val) {
-	val + val;
-	val * (-1);
-}
-
-template <typename T>
-concept HasToString = requires(const T v) {
+concept ComplexConcept = requires(const T v) {
 	{v.hash() }
 	->std::convertible_to<long>;
 	{ v.toString() }
@@ -20,31 +11,23 @@ concept HasToString = requires(const T v) {
 
 struct Number {
 	int m_num{ 0 };
+	long hash() const {
+		return (long)m_num;
+	}
 	std::string toString() const {
 		return std::to_string(m_num);
 	}
+	//virtual ~Number() {}
 };
 
-struct myChar {
-	char ch;
-	std::string toString() const {
-		return std::to_string(ch);
-	}
-};
 
-void PrintType(HasToString auto& t) {
+void PrintType(ComplexConcept auto& t) {
+	t.hash();
 	std::cout << t.toString() << '\n';
 }
 
-int main() {
-	//std::cout << "Hello!" << std::endl;
-	funcOnlyForSignedInts(5);
-	//funcOnlyForSignedInts(5U);
-	//funcOnlyForSignedInts(5.0);
-	//funcOnlyForSignedInts("go");
-
+int main() {	
 	Number x{15};
-	PrintType(x);
-	
+	PrintType(x);	
 	return 0;
 }
